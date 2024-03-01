@@ -1,4 +1,4 @@
-from fastapi import FastAPI
+from fastapi import Body,FastAPI
 
 app = FastAPI()
 
@@ -11,6 +11,9 @@ BOOKS = [
     {"title" : "Title six" , "author" : "Author six" , "category" : "bio" },
 
 ]
+
+##################################### GET ~ READ ##################################
+
 ##########################   Path Paramter ###########################################
 
 @app.get("/books")
@@ -61,3 +64,34 @@ async def read_author_category_by_query(author_name:str , category_name:str):
              ans_books.append(book)
         
         return ans_books
+
+
+##################################### POST ~ WRITE ##################################
+
+############################################# POST ##############################
+
+# Body is complete empty sort of text field 
+@app.post("/books/create_book")
+async def create_book(new_book = Body()):
+    BOOKS.append(new_book)
+
+
+##################################### PUT ~ UPDATE ##################################
+
+@app.put("/books/update_book")
+
+async def update_book(updated_book = Body()):
+    for i in range(len(BOOKS)):
+        if BOOKS[i].get('title').casefold() == updated_book.get('title').casefold():
+            BOOKS[i] = updated_book
+
+
+##################################### DELETE ##################################
+
+@app.delete("/books/delete_book/{book_title}")
+
+async def delete_book(book_title:str):
+    for i in range(len(BOOKS)):
+        if BOOKS[i].get('title').casefold() == book_title.casefold():
+            BOOKS.pop(i)
+            break
